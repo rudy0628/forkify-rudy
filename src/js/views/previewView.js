@@ -29,10 +29,6 @@ class PreviewView extends View {
     </li>
     `;
   }
-
-  _printSomethingNew() {
-    console.log('new Feature');
-  }
 }
 
 export default new PreviewView();
