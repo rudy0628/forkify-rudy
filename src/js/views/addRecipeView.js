@@ -9,6 +9,7 @@ class AddRecipeView extends View {
   _overlay = document.querySelector('.overlay');
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
   _btnClose = document.querySelector('.btn--close-modal');
+  _errorMessage = document.querySelector('.error--message');
 
   constructor() {
     super();
@@ -38,6 +39,15 @@ class AddRecipeView extends View {
       const data = Object.fromEntries(dataArr);
       handler(data);
     });
+  }
+
+  renderErrorMessage(err){
+    this._errorMessage.style.display = 'block';
+    this._errorMessage.textContent = err;
+    setTimeout(() => {
+      this._errorMessage.textContent = '';
+      this._errorMessage.style.display = 'none';
+    }, 2000)
   }
 
   _generateMarkup() {}

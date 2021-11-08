@@ -12,6 +12,9 @@
 .pagination {
   margin-top: auto;
   padding: 0 3.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 
   &::after {
     content: '';
@@ -27,6 +30,12 @@
       float: right;
     }
   }
+}
+
+.btn--sort--nav {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 5px;
 }
 
 .copyright {

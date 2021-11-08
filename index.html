@@ -80,11 +80,44 @@
                 </ul>
               </div>
             </li>
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--shopping">
+                <span>shopping list</span>
+              </button>
+              <div class="shopping">
+                <ul class="shopping__list">
+                  <div class="message">
+                    <div>
+                      <svg>
+                        <use href="src/img/icons.svg#icon-smile"></use>
+                      </svg>
+                    </div>
+                    <p>
+                      No shopping list yet :)
+                    </p>
+                  </div>
+                  <!-- <li class="shopping__ingredient">
+                    <div class="shopping__name">
+                      <h2>salt</h2>
+                    </div>
+                    <div class="shopping__amount">
+                      <h2>1/<span class="unit">bag</span></h2>
+                    </div>
+                  </li> -->
+                </ul>
+              </div>
+            </li>
+            <li class="nav__item">
+              <button class="open__calendar nav__btn">calendar</button>
+            </li>
           </ul>
         </nav>
       </header>
 
       <div class="search-results">
+        <div class="btn--sort--nav">
+          <button class="btn--sort">sort</button>
+        </div>
         <ul class="results">
           <!-- 
           <li class="preview">
@@ -318,7 +351,44 @@
             name="ingredient-6"
             placeholder="Format: 'Quantity,Unit,Description'"
           />
+          <label>Ingredient 7</label>
+          <input
+            type="text"
+            name="ingredient-7"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
+          <label>Ingredient 8</label>
+          <input
+            type="text"
+            name="ingredient-8"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
+          <label>Ingredient 9</label>
+          <input
+            type="text"
+            name="ingredient-9"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
+          <label>Ingredient 10</label>
+          <input
+            type="text"
+            name="ingredient-10"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
+          <label>Ingredient 11</label>
+          <input
+            type="text"
+            name="ingredient-11"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
+          <label>Ingredient 12</label>
+          <input
+            type="text"
+            name="ingredient-12"
+            placeholder="Format: 'Quantity,Unit,Description'"
+          />
         </div>
+        <h2 class="error--message">error message</h2>
 
         <button class="btn upload__btn">
           <svg>
@@ -327,6 +397,9 @@
           <span>Upload</span>
         </button>
       </form>
+    </div>
+    <div class="calendar-window hidden">
+      <button class="btn--close-calendar">&times;</button>
     </div>
   </body>
 </html>

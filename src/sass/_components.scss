@@ -152,6 +152,25 @@
   }
 }
 
+.btn--sort {
+  height: 20px;
+  width: 40px;
+  font-size: 1.5rem;
+  background-color: transparent;
+  color: coral;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.3s ease-in-out;
+  display: none;
+}
+
+.btn--sort:hover {
+  background-color: coral;
+  color: white;
+}
+
 .heading--2 {
   font-size: 2rem;
   font-weight: 700;
@@ -160,6 +179,19 @@
   margin-bottom: 2.5rem;
   text-align: center;
   // transform: skewY(-3deg);
+}
+.heading--3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: $color-grey-dark-1;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.page__num {
+  text-align: center;
+  font-size: 1.5rem;
+  color: coral;
 }
 
 .link:link,

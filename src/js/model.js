@@ -1,9 +1,24 @@
 import 'regenerator-runtime/runtime';
-import { API_URL, RESULT_PER_PAGE, KEY } from './config.js';
+import {
+  API_URL,
+  RESULT_PER_PAGE,
+  KEY,
+  API_URL_SPOON,
+  KEY_SPOON,
+} from './config.js';
 import { AJAX } from './helper.js';
 
-const createRecipeObject = function (data) {
+const createRecipeObject = function (data, dataSpoon) {
   const { recipe } = data.data;
+
+  let cal = 'no cal';
+  console.log(dataSpoon.results);
+  //get data of calories
+  if (dataSpoon.results.length) {
+    const [result] = dataSpoon.results;
+    const { amount } = result.nutrition.nutrients[0];
+    cal = amount;
+  }
 
   return {
     id: recipe.id,
@@ -15,6 +30,7 @@ const createRecipeObject = function (data) {
     cookingTime: recipe.cooking_time,
     ingredients: recipe.ingredients,
     ...(recipe.key && { key: recipe.key }),
+    calories: cal,
   };
 };
 
@@ -23,18 +39,25 @@ export const state = {
   search: {
     query: '',
     result: [],
+    isSorted: false,
     page: 1,
     resultPerPage: RESULT_PER_PAGE,
   },
   bookmarks: [],
+  shoppingList: [],
 };
 
 export const loadRecipe = async function (id) {
   try {
     const data = await AJAX(`${API_URL}/${id}?key=${KEY}`);
+    const dataSpoon = await AJAX(
+      `${API_URL_SPOON}?query=${data.data.recipe.title}&number=1&minCalories=50&apiKey=${KEY_SPOON}`
+    );
 
     //put the data into the state.recipe
-    state.recipe = createRecipeObject(data);
+    state.recipe = createRecipeObject(data, dataSpoon);
+
+    console.log(state.recipe);
 
     //check if the bookmarked array have the current recipe(use id to check)
     state.recipe.bookmarked = state.bookmarks.some(
@@ -42,7 +65,6 @@ export const loadRecipe = async function (id) {
     )
       ? true
       : false;
-    console.log(state.recipe);
   } catch (err) {
     // temp error handling
     // console.error(`${err} 🤬🤬`);
@@ -56,16 +78,18 @@ export const loadSearchResult = async function (query) {
 
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
 
+    //origin search result
     state.search.result = data.data.recipes.map(rec => {
+      const rank = Math.trunc(Math.random() * 100) + 1;
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
         image: rec.image_url,
         ...(rec.key && { key: rec.key }),
+        rank,
       };
     });
-
     state.search.page = 1;
   } catch (err) {
     throw err;
@@ -77,8 +101,11 @@ export const getSearchResultPage = function (page = state.search.page) {
 
   const start = (page - 1) * state.search.resultPerPage; // 0
   const end = page * state.search.resultPerPage; // 10
+  const result = state.search.isSorted
+    ? state.search.result.slice().sort((a, b) => a.rank - b.rank)
+    : state.search.result;
 
-  return state.search.result.slice(start, end);
+  return result.slice(start, end);
 };
 
 export const updateServings = function (newServing) {
@@ -104,6 +131,8 @@ export const addBookMark = function (recipe) {
 
   // store bookmarks in local storage
   persistBookmark();
+
+  sameIngCalc();
 };
 
 export const removeBookMark = function (id) {
@@ -116,14 +145,39 @@ export const removeBookMark = function (id) {
 
   // store bookmarks in local storage
   persistBookmark();
+
+  sameIngCalc();
+};
+
+const sameIngCalc = function () {
+  //adding total quantity with same ingredients
+  state.shoppingList = [];
+  for (const list of state.bookmarks) {
+    for (const ing of list.ingredients) {
+      // if (ing.description === 'Rice') count += ing.quantity;
+      const arrIng = state.shoppingList.find(
+        el => el.description === ing.description
+      );
+      if (!arrIng) {
+        state.shoppingList.push({
+          description: ing.description,
+          quantity: ing.quantity,
+          unit: ing.unit,
+        });
+      } else {
+        arrIng.quantity += ing.quantity;
+      }
+    }
+  }
 };
 
 const init = function () {
-  const storage = localStorage.getItem('bookmarks');
-  if (storage) state.bookmarks = JSON.parse(storage);
+  const bookmarkStorage = localStorage.getItem('bookmarks');
+  if (bookmarkStorage) state.bookmarks = JSON.parse(bookmarkStorage);
+
+  sameIngCalc();
 };
 init();
-console.log(state.bookmarks);
 
 /*convert object to an array, and filter the ingredient and check whether is empty string, and then use map create the array, destructing the quantity, unit and description from the ing[1], and put into the object, in the array*/
 
@@ -157,4 +211,9 @@ export const uploadRecipe = async function (newRecipe) {
   } catch (err) {
     throw err;
   }
+};
+
+export const resultSort = function () {
+  //change the resultSort array
+  state.search.isSorted = !state.search.isSorted;
 };

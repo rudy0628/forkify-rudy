@@ -11,7 +11,6 @@ class PaginationView extends View {
       if (!btn) return;
 
       const goToPage = +btn.dataset.goto;
-      console.log(goToPage);
       handler(goToPage);
     });
   }
@@ -25,18 +24,25 @@ class PaginationView extends View {
 
     // page 1, and there are other page
     if (curPage === 1 && numPages > 1) {
-      return `${this._generateMarkupButton(curPage + 1, 'next', 'right')}`;
+      return `
+      <h3 class="page__num">page:${curPage}</h3>
+      ${this._generateMarkupButton(curPage + 1, 'next', 'right')}
+      `;
     }
 
     // last page
     if (curPage === numPages && numPages > 1) {
-      return `${this._generateMarkupButton(curPage - 1, 'prev', 'left')}`;
+      return `
+      ${this._generateMarkupButton(curPage - 1, 'prev', 'left')}
+      <h3 class="page__num">page:${curPage}</h3>
+      `;
     }
 
     // other page
     if (curPage < numPages) {
       return `
         ${this._generateMarkupButton(curPage - 1, 'prev', 'left')}
+        <h3 class="page__num">page:${curPage}</h3>
         ${this._generateMarkupButton(curPage + 1, 'next', 'right')}
       `;
     }

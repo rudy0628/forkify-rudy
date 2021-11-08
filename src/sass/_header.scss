@@ -30,8 +30,8 @@
     background: none;
     font-family: inherit;
     color: inherit;
-    font-size: 1.7rem;
-    width: 30rem;
+    font-size: 1.5rem;
+    width: 22rem;
 
     &:focus {
       outline: none;
@@ -41,7 +41,7 @@
       color: $color-grey-light-3;
     }
 
-    @media only screen and (max-width: $bp-medium) {
+    @media only screen and (max-width: $bp-large) {
       width: auto;
 
       &::placeholder {
@@ -52,6 +52,7 @@
 
   &__btn {
     font-weight: 600;
+    font-size: 1.2rem;
     font-family: inherit;
   }
 }
@@ -138,6 +139,73 @@
 
   &:hover,
   .nav__btn--bookmarks:hover + & {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.shopping {
+  padding: 1rem 0;
+  position: absolute;
+  // right: 0;
+  right: -2.5rem;
+  z-index: 10;
+  width: 40rem;
+  height: 200px;
+  overflow-y: scroll;
+  background-color: #fff;
+  box-shadow: 0 0.8rem 5rem 2rem rgba($color-grey-dark-1, 0.1);
+
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s 0.2s;
+
+  &__list {
+    list-style: none;
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+  }
+
+  &__field {
+    cursor: pointer;
+    padding: 0 4rem;
+
+    display: flex;
+    align-items: center;
+    height: 100%;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $color-grey-light-2;
+    }
+  }
+
+  &__ingredient {
+    display: flex;
+    flex: 1 1;
+    margin: 0px 10px;
+    font-size: 1rem;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+  }
+
+  &:hover,
+  .nav__btn--shopping:hover + & {
     visibility: visible;
     opacity: 1;
   }

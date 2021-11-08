@@ -5,6 +5,8 @@ import resultView from './views/resultView.js';
 import paginationView from './views/paginationView.js';
 import bookmarkView from './views/bookmarkView.js';
 import addRecipeView from './views/addRecipeView.js';
+import shoppingListView from './views/shoppingListView.js';
+import calendarView from './views/calendarView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -20,11 +22,12 @@ const controlRecipes = async function () {
   const id = window.location.hash.slice(1);
   if (!id) return;
   try {
-    recipeView.renderSpinner(); // view
     // 0.update result view to mark selected result search
     resultView.update(model.getSearchResultPage());
+    recipeView.renderSpinner(); // view
     // updating the bookmark view
     bookmarkView.update(model.state.bookmarks);
+    shoppingListView.render(model.state.shoppingList);
 
     // 1. loading recipe
     await model.loadRecipe(id); // model
@@ -34,6 +37,7 @@ const controlRecipes = async function () {
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
+    console.log(err);
   }
 };
 
@@ -41,7 +45,6 @@ const controlSearchResult = async function () {
   try {
     // 1) get search input value
     const query = searchView.getQuery();
-
     if (!query) return;
 
     // 2) load the search result
@@ -50,6 +53,7 @@ const controlSearchResult = async function () {
     // 3) render the search result
     resultView.renderSpinner();
     resultView.render(model.getSearchResultPage());
+    resultView.renderButton();
 
     // 4) render the initial pagination buttons
     console.log(model.state.search);
@@ -75,16 +79,20 @@ const controlServing = function (newServing) {
   recipeView.update(model.state.recipe);
 };
 
-const controlAddBookmark = function () {
-  // 1) add and remove bookmark
-  if (!model.state.recipe.bookmarked) model.addBookMark(model.state.recipe);
-  else if (model.state.recipe.bookmarked)
+const controlBookmark = function () {
+  // 1) add and remove bookmark、shopping list
+  if (!model.state.recipe.bookmarked) {
+    model.addBookMark(model.state.recipe);
+  } else if (model.state.recipe.bookmarked) {
     model.removeBookMark(model.state.recipe.id);
+  }
+
   // 2) update the bookmark icon
   recipeView.update(model.state.recipe);
 
   // 3) render bookmarks
   bookmarkView.render(model.state.bookmarks);
+  shoppingListView.render(model.state.shoppingList);
 };
 
 const controlBookmarks = function () {
@@ -93,11 +101,11 @@ const controlBookmarks = function () {
 
 const controlUploadRecipe = async function (newRecipe) {
   try {
-    //render spinner
-    addRecipeView.renderSpinner();
-
     //upload the new recipe data
     await model.uploadRecipe(newRecipe);
+
+    //render spinner
+    addRecipeView.renderSpinner();
 
     //render the recipe
     recipeView.render(model.state.recipe);
@@ -116,8 +124,19 @@ const controlUploadRecipe = async function (newRecipe) {
       addRecipeView.toggleWindow();
     }, CLOSE_MODAL_SECOND * 1000);
   } catch (err) {
-    console.error(err);
+    addRecipeView.renderErrorMessage(err);
   }
+};
+
+const controlSortResult = function () {
+  //change the current sort state
+  model.resultSort();
+  //render the current search result page
+  resultView.render(model.getSearchResultPage());
+};
+
+const controlCalendar = function () {
+  calendarView.loadCalendar(model.state.bookmarks);
 };
 
 const init = function () {
@@ -125,9 +144,11 @@ const init = function () {
   bookmarkView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServing(controlServing);
-  recipeView.addHandlerAddBookMark(controlAddBookmark);
+  recipeView.addHandlerAddBookMark(controlBookmark);
   searchView.addHandlerSearch(controlSearchResult);
   paginationView.addHandlerClick(controlPagination);
   addRecipeView.addHandlerUpload(controlUploadRecipe);
+  resultView.addHandlerSort(controlSortResult);
+  calendarView.addHandlerLoadCal(controlCalendar);
 };
 init();
